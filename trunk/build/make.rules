@@ -1,0 +1,61 @@
+###### Defaults ###### 
+RM ?= rm
+CFLAGS+=-g -O2 -Wall -D_THREAD_SAFE -pthread -I${top_builddir}/include
+
+###### Include platform specific makefile ######
+UNAME:=$(shell uname -s)
+ifeq ($(UNAME), Darwin)
+	include ${top_builddir}/build/darwin.rules
+endif
+
+###### C part ###### 
+%.lo %.o:	%.c
+	@echo "Compiling $@"
+	@$(LIBTOOL) --tag CC --quiet --mode=compile gcc ${CFLAGS} -c $^ -o $@
+
+###### Library part ###### 
+ifdef LIB_NAME
+LIB_OBJS=$(patsubst %.c, %.lo, ${LIB_SOURCES})
+
+${LIB_NAME}: ${LIB_OBJS}
+	@echo "Linking library $@"
+	@$(LIBTOOL) --tag CC --quiet --mode=link gcc ${CFLAGS} $^ -o $@ -rpath ${exec_prefix}/lib ${LIBS}
+
+endif
+
+###### Binary part ###### 
+ifdef BIN_NAME
+BIN_OBJS=$(patsubst %.c, %.lo, ${BIN_SOURCES})
+
+${BIN_NAME}: ${BIN_OBJS}
+	@echo "Linking binary $@"
+	@$(LIBTOOL) --tag CC --quiet --mode=link gcc ${CFLAGS} $^ -o $@ -rpath ${exec_prefix}/lib ${LIBS}
+
+endif
+
+###### Subdirectory path ######
+${SUBDIRS}:
+	@for dir in $@ ; do ${MAKE} -C $$dir ; done
+
+###### Clean part ###### 
+clean:
+	@echo "Cleaning $(shell basename ${CURDIR})"
+ifdef LIB_NAME
+	@$(LIBTOOL) --tag CC --quiet --mode=clean ${RM} ${LIB_NAME} ${LIB_OBJS}
+endif
+ifdef BIN_NAME
+	@$(LIBTOOL) --tag CC --quiet --mode=clean ${RM} ${BIN_NAME} ${BIN_OBJS}
+endif
+ifdef CLEAN_FILES
+	@rm -f ${CLEAN_FILES}
+endif
+ifdef SUBDIRS
+	@for dir in ${SUBDIRS} ; do ${MAKE} -C $$dir clean ; done
+endif
+ifdef CLEAN_SUBDIRS
+	@for dir in ${CLEAN_SUBDIRS} ; do ${MAKE} -C $$dir clean ; done
+endif
+
+######################
+
+.PHONY : clean all ${SUBDIRS}
