@@ -1,0 +1,74 @@
+#!/bin/sh
+
+BUILDDIR=$(dirname ${BASH_SOURCE})
+PREFIX=/usr/local
+CFLAGS=${CFLAGS--g -O2 -Wall}
+
+while test $# -gt 0
+do
+	case $1 in
+
+		# Normal option processing
+		-h | --help)
+			echo "usage: $BASH_SOURCE [OPTION]..."
+			echo ""
+			echo "Options:"
+			echo "  -h, --help              display this help and exit"
+			echo "  --prefix=PREFIX         install files in PREFIX [${PREFIX}]"
+			echo ""
+			echo "By default, 'make install' will install all the files in"
+			echo "'/usr/local/bin', '/usr/local/lib' etc.  You can specify"
+			echo "an installation prefix other than '/usr/local' using '--prefix',"
+			echo "for instance '--prefix=/opt'."
+			echo ""
+			echo "Some influential environment variables:"
+			echo "  CC          C compiler command"
+			echo "  CFLAGS      C compiler flags"
+			echo "  CPP         C preprocessor"
+			echo "  LIBTOOL     GNU Libtool command"
+			echo "  RM          POSIX rm tool command"
+			echo "  INSTALL     Install tool command"
+			exit 0
+			;;
+
+		--prefix=*)
+			PREFIX=${1:9}
+			;;
+
+
+		# Special cases
+		--)
+			break
+			;;
+		--*)
+			# error unknown (long) option $1
+			echo "Unknown option $1" 1>&2
+			exit 1
+			;;
+
+		-?)
+			# error unknown (short) option $1
+			echo "Unknown option $1" 1>&2
+			exit 1
+			;;
+
+		# Done with options
+		*)
+			echo "Unknown argument $1" 1>&2
+			exit 1
+			;;
+	esac
+
+	shift
+done
+
+
+# Save configuration
+echo > ${BUILDDIR}/config.make
+echo "PREFIX="${PREFIX} >> ${BUILDDIR}/config.make
+echo "CFLAGS+="${CFLAGS} >> ${BUILDDIR}/config.make
+[ -n "${CC}" ] && echo "CC="${CC} >> ${BUILDDIR}/config.make
+[ -n "${CPP}" ] && echo "CPP="${CC} >> ${BUILDDIR}/config.make
+[ -n "${RM}" ] && echo "RM="${CC} >> ${BUILDDIR}/config.make
+[ -n "${LIBTOOL}" ] && echo "LIBTOOL="${CC} >> ${BUILDDIR}/config.make
+[ -n "${INSTALL}" ] && echo "INSTALL="${CC} >> ${BUILDDIR}/config.make

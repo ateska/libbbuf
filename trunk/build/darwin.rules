@@ -1,2 +1,2 @@
 CFLAGS+=-arch x86_64 -arch ppc -arch i386
-LIBTOOL:=glibtool
+LIBTOOL?=glibtool
