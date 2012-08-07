@@ -32,7 +32,7 @@ do
 			;;
 
 		--prefix=*)
-			PREFIX=$(expr "--prefix=$1" : "--prefix=[ ]*\(.*\)")
+			PREFIX=$(expr "$1" : "--prefix=[ ]*\(.*\)")
 			;;
 
 
