@@ -32,7 +32,7 @@ do
 			;;
 
 		--prefix=*)
-			PREFIX=${1:9}
+			PREFIX=$(expr substr "$1" 10 100000000)
 			;;
 
 
