@@ -22,6 +22,9 @@ static void __buf_getabstimeout(struct timespec * ts, unsigned int timeout_ms);
 // Error reporting callback
 void (*bbuf_perror)(const char *) = perror;
 
+// Version
+char * bbuf_version = VERSION;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 int bbuf_init(struct bbuf_t * b, unsigned int max_size)

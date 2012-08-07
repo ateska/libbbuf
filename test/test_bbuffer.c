@@ -99,7 +99,7 @@ int main(int argc, char ** argv)
 	int rc, i;
 	time_t startt, endt;
 	
-	printf("Test started\n");
+	printf("Test started - libbbuf version: %s\n", bbuf_version);
 	
 	srandom(time(NULL));
 
@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
 	producer_sum = 0;
 
 	for (i=0;i<NUMBERS_SIZE;i++) numbers[i] = i;
-	
+
 	err = bbuf_init(&testbuf, 64);
 	assert(!err);
 

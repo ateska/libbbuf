@@ -72,3 +72,4 @@ echo "CFLAGS+="${CFLAGS} >> ${BUILDDIR}/config.make
 [ -n "${RM}" ] && echo "RM="${CC} >> ${BUILDDIR}/config.make
 [ -n "${LIBTOOL}" ] && echo "LIBTOOL="${CC} >> ${BUILDDIR}/config.make
 [ -n "${INSTALL}" ] && echo "INSTALL="${CC} >> ${BUILDDIR}/config.make
+echo "VERSION="$(cat ${BUILDDIR}/VERSION) >> ${BUILDDIR}/config.make
