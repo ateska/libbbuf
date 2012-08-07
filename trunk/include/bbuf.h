@@ -43,6 +43,7 @@ int bbuf_timed_put(struct bbuf_t * b, void * item, unsigned int timeout_ms);
 int bbuf_get(struct bbuf_t * b, void ** item);
 int bbuf_timed_get(struct bbuf_t * b, void ** item, unsigned int timeout_ms);
 
+extern char * bbuf_version;
 extern void (*bbuf_perror)(const char *);
 
 ////////////////////////////////////////////////////////////////////////////////

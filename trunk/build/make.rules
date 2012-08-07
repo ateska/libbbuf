@@ -1,7 +1,7 @@
 ###### Defaults ###### 
 
 include ${top_builddir}/config.make
-CFLAGS+=-D_THREAD_SAFE -pthread -I${top_builddir}/include
+CFLAGS+=-D_THREAD_SAFE -DVERSION=\"${VERSION}\" -pthread -I${top_builddir}/include
 PREFIX?=/usr/local
 
 ###### Include platform specific makefile ######
