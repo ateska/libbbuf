@@ -1,6 +1,8 @@
 ###### Defaults ###### 
-RM ?= rm
-CFLAGS+=-g -O2 -Wall -D_THREAD_SAFE -pthread -I${top_builddir}/include
+
+include ${top_builddir}/config.make
+CFLAGS+=-D_THREAD_SAFE -pthread -I${top_builddir}/include
+PREFIX?=/usr/local
 
 ###### Include platform specific makefile ######
 UNAME:=$(shell uname -s)
@@ -8,10 +10,15 @@ ifeq ($(UNAME), Darwin)
 	include ${top_builddir}/build/darwin.rules
 endif
 
+###### Tools ###### 
+LIBTOOL?=libtool
+INSTALL?=install
+RM?=rm
+
 ###### C part ###### 
 %.lo %.o:	%.c
 	@echo "Compiling $@"
-	@$(LIBTOOL) --tag CC --quiet --mode=compile gcc ${CFLAGS} -c $^ -o $@
+	@$(LIBTOOL) --tag CC --quiet --mode=compile ${CC} ${CFLAGS} -c $^ -o $@
 
 ###### Library part ###### 
 ifdef LIB_NAME
@@ -19,7 +26,7 @@ LIB_OBJS=$(patsubst %.c, %.lo, ${LIB_SOURCES})
 
 ${LIB_NAME}: ${LIB_OBJS}
 	@echo "Linking library $@"
-	@$(LIBTOOL) --tag CC --quiet --mode=link gcc ${CFLAGS} $^ -o $@ -rpath ${exec_prefix}/lib ${LIBS}
+	@$(LIBTOOL) --tag CC --quiet --mode=link ${CC} ${CFLAGS} $^ -o $@ -rpath ${PREFIX}/lib ${LIBS}
 
 endif
 
@@ -29,7 +36,7 @@ BIN_OBJS=$(patsubst %.c, %.lo, ${BIN_SOURCES})
 
 ${BIN_NAME}: ${BIN_OBJS}
 	@echo "Linking binary $@"
-	@$(LIBTOOL) --tag CC --quiet --mode=link gcc ${CFLAGS} $^ -o $@ -rpath ${exec_prefix}/lib ${LIBS}
+	@$(LIBTOOL) --tag CC --quiet --mode=link ${CC} ${CFLAGS} $^ -o $@ -rpath ${PREFIX}/lib ${LIBS}
 
 endif
 
@@ -58,4 +65,4 @@ endif
 
 ######################
 
-.PHONY : clean all ${SUBDIRS}
+.PHONY : clean all install ${SUBDIRS}
